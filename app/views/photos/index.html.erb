@@ -1,0 +1,78 @@
+<h1>List of photos</h1>
+
+<form action="/insert_photo" method="post">
+  <label for="browser_input">Image</label>
+  <input id="browser_input" type="file" id="image" name="image" class="form-control" placeholder="Enter a URL for the image...">
+
+  <label for="browser_caption">Caption</label>
+  <textarea id="browser_caption" name="photo[caption]" placeholder="Enter a caption for the photo..."></textarea>
+
+  <input type="hidden" name="photo[owner_id]" value="<%= current_user.id %>">
+
+  <button>Add photo</button>
+</form>
+
+<hr>
+
+<div>
+  <div>
+    <table border="1">
+      <tr>
+        <th>
+          Image
+        </th>
+
+        <th>
+          Caption
+        </th>
+
+        <th>
+          Owner
+        </th>
+
+        <th>
+          Posted
+        </th>
+
+        <th>
+          Likes
+        </th>
+
+        <th></th>
+      </tr>
+
+      <% @photos.each do |a_photo| %>
+        <tr>
+    
+      <td>
+      <%= a_photo.image.url %>
+    </td>
+
+          <td>
+            <%= a_photo.caption %>
+          </td>
+
+          <td>
+            <%= a_photo.owner.username %>
+          </td>
+
+          <td>
+            <%= time_ago_in_words(a_photo.created_at) %> ago
+          </td>
+
+          <td>
+            <%= a_photo.likes_count %>
+          </td>
+
+          <td>
+            <a href="/photos/<%= a_photo.id %>">
+              Show details
+            </a>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+</div>
+
+<hr>

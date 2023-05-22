@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PhotogramFinal</title>
+    <%= csrf_meta_tags %>
+
+    <!-- Expand the number of characters we can use in the document beyond basic ASCII 🎉 -->
+    <meta charset="utf-8">
+
+    <!-- Make it responsive to small screens -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag    'application', media: 'all' %>
+  </head>
+
+  <body>
+  <ul>
+      <li>
+        <a href="/users">
+          All users
+        </a>
+      </li>
+      
+      <li>
+        <a href="/photos">
+          All public photos
+        </a>
+      </li>
+<% if current_user %>
+   <li>
+  <%= link_to current_user.username, edit_user_profile_path(@current_user.id) %>
+</li>
+    <li>
+      <%= link_to "Sign out", "/user_sign_out" %>
+    </li>
+  <% else %>
+    <li>
+      <a href="/user_sign_in">
+        Sign in
+      </a>
+    </li>
+
+    <li>
+      <a href="/user_sign_up">
+        Sign up
+      </a>
+    </li>
+  <% end %>
+</ul>
+    </ul>
+<% if flash[:notice].present? %>
+      <div style="border: thin green solid; color: green">
+        <%= flash[:notice] %>
+      </div>
+    <% end %>
+
+    <% if flash[:alert].present? %>
+      <div style="border: thin red solid; color: red">
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
+
+    <%= yield %>
+  </body>
+</html>

@@ -1,0 +1,87 @@
+<h1><%= @user.username %></h1>
+
+<dl>
+  
+    <dt>Private</dt>
+    <dd><%= @user.private %></dd>
+  
+    <dt>Followers</dt>
+    <dd><%= @user.followers.count %></dd>
+  
+  <td><% if current_user.following?(@user) %>
+  <%= form_with(url: unfollow_user_path(@user), method: :post) do %>
+    <%= hidden_field_tag :_method, :delete %>
+    <%= submit_tag 'Unfollow', style: 'background: none!important;border: none;padding: 0!important;color: blue;text-decoration: underline;cursor: pointer;' %>
+  <% end %>
+<% else %>
+  <form action="/insert_follow_request" method="post">
+    <%= hidden_field_tag 'query_sender_id', current_user.id %>
+    <%= hidden_field_tag 'query_recipient_id', @user.id %>
+    <%= hidden_field_tag 'query_status', 'pending' %>
+    <button>Follow</button>
+  </form>
+<% end %>
+</td>
+
+    <dt>Following</dt> 
+    <dd> <%= @user.following.count %></dd>
+
+</dl>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/users/<%= @user.username %>">Profile</a>
+    </li>
+    <li>
+      <a href="<%= liked_photos_user_path(@user) %>">Liked photos</a>
+    </li>
+  <li>
+  <a href="<%= feed_user_path(@user) %>">Feed</a>
+</li>
+<li>
+  <a href="<%= discovery_user_path(@user) %>">Discovery</a>
+</li>
+  </ul>
+</nav>
+
+<h2>Own photos (<%= @user.own_photos.count %>)</h2>
+
+<table border="1">
+  <tr>
+    <th>
+      Image
+    </th>
+
+    <th>
+      Owner
+    </th>
+
+    <th>
+      Caption
+    </th>
+
+    <th>
+      Posted
+    </th>
+
+    <th>
+      Likes
+    </th>
+
+    <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @user.own_photos.each do |photo| %>
+      <tr>
+        <td><%= image_tag(photo.image.url) if photo.image? %></td>
+        <td><%= photo.owner.username %></td>
+        <td><%= photo.caption %></td>
+        <td><%= time_ago_in_words(photo.created_at) %> ago</td>
+        <td><%= photo.likes_count %></td>
+        <td><%= link_to "Show details", "/photos/#{photo.id}" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

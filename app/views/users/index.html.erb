@@ -1,0 +1,40 @@
+<h1>List of users</h1>
+
+<table border="1">
+  <tr>
+    <th>Username</th>
+    <th>Private?</th>
+    <th></th>
+    <th></th>
+  </tr>
+
+  <% @users.each do |user| %>
+  <tr>
+    <td><%= user.username %></td>
+    <td><%= user.private ? 'Yes' : 'No' %></td>
+    <td>
+  <% if current_user %>
+  <% if user.private && current_user.sent_request_to?(user) %>
+    <p>Request sent</p>
+    <%= form_with(url: cancel_request_path(user), method: :delete) do %>
+  <%= submit_tag 'Cancel', style: 'background: none!important;border: none;padding: 0!important;color: blue;text-decoration: underline;cursor: pointer;' %>
+<% end %>
+  <% elsif current_user.following?(user) %>
+  <%= form_with(url: unfollow_user_path(user), method: :post) do %>
+    <%= hidden_field_tag :_method, :delete %>
+    <%= submit_tag 'Unfollow', style: 'background: none!important;border: none;padding: 0!important;color: blue;text-decoration: underline;cursor: pointer;' %>
+  <% end %>
+  <% else %>
+    <form action="/insert_follow_request" method="post">
+      <%= hidden_field_tag 'query_sender_id', current_user.id %>
+      <%= hidden_field_tag 'query_recipient_id', user.id %>
+      <%= hidden_field_tag 'query_status', 'pending' %>
+      <button>Follow</button>
+    </form>
+  <% end %>
+<% end %>
+    </td>
+    <td><a href="/users/<%= user.username %>">Show details</a></td>
+  </tr>
+  <% end %>
+</table>
